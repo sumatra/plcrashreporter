@@ -177,6 +177,7 @@ static plcrash_error_t plcr_live_report_callback (plcrash_async_thread_state_t *
     STAssertNotNil(crashLog.applicationInfo, @"No application information available");
     STAssertNotNil(crashLog.applicationInfo.applicationIdentifier, @"No application identifier available");
     STAssertNotNil(crashLog.applicationInfo.applicationVersion, @"No application version available");
+    STAssertNotNil(crashLog.applicationInfo.applicationShortVersion, @"No application short version available");
     
     /* Process info */
     STAssertNotNil(crashLog.processInfo, @"No process information available");

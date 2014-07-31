@@ -222,7 +222,11 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         [text appendFormat: @"Process:         %@ [%@]\n", processName, processId];
         [text appendFormat: @"Path:            %@\n", processPath];
         [text appendFormat: @"Identifier:      %@\n", report.applicationInfo.applicationIdentifier];
-        [text appendFormat: @"Version:         %@\n", report.applicationInfo.applicationVersion];
+        [text appendFormat: @"Version:         %@\n", ([report.applicationInfo.applicationShortVersion length] ?
+                                                       [NSString stringWithFormat:@"%@ (%@)",
+                                                        report.applicationInfo.applicationVersion,
+                                                        report.applicationInfo.applicationShortVersion] :
+                                                       report.applicationInfo.applicationVersion)];
         [text appendFormat: @"Code Type:       %@\n", codeType];
         [text appendFormat: @"Parent Process:  %@ [%@]\n", parentProcessName, parentProcessId];
     }

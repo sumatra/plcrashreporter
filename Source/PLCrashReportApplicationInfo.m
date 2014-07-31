@@ -41,15 +41,18 @@
  *
  * @param applicationIdentifier Application identifier. This is usually the CFBundleIdentifier value.
  * @param applicationVersion Application version. This is usually the CFBundleVersion value.
+ * @param applicationShortVersion Application short version. This is usually the CFBundleShortVersionString value. Optional.
  */
 - (id) initWithApplicationIdentifier: (NSString *) applicationIdentifier 
                   applicationVersion: (NSString *) applicationVersion
+             applicationShortVersion: (NSString *) applicationShortVersion
 {
     if ((self = [super init]) == nil)
         return nil;
 
     _applicationIdentifier = [applicationIdentifier retain];
     _applicationVersion = [applicationVersion retain];
+    _applicationShortVersion = [applicationShortVersion retain];
 
     return self;
 }
@@ -57,10 +60,12 @@
 - (void) dealloc {
     [_applicationIdentifier release];
     [_applicationVersion release];
+    [_applicationShortVersion release];
     [super dealloc];
 }
 
 @synthesize applicationIdentifier = _applicationIdentifier;
 @synthesize applicationVersion = _applicationVersion;
+@synthesize applicationShortVersion = _applicationShortVersion;
 
 @end

@@ -92,6 +92,9 @@ enum {
     /** CrashReport.app_info.app_version */
     PLCRASH_PROTO_APP_INFO_APP_VERSION_ID = 2,
 
+    /** CrashReport.app_info.app_short_version */
+    PLCRASH_PROTO_APP_INFO_APP_SHORT_VERSION_ID = 3,
+
 
     /** CrashReport.symbol.name */
     PLCRASH_PROTO_SYMBOL_NAME = 1,
@@ -257,6 +260,7 @@ enum {
  * @param writer Writer instance to be initialized.
  * @param app_identifier Unique per-application identifier. On Mac OS X, this is likely the CFBundleIdentifier.
  * @param app_version Application version string.
+ * @param app_short_version Application short version string. Optional.
  * @param symbol_strategy The strategy to use for local symbolication.
  * @param user_requested If true, the written report will be marked as a 'generated' non-crash report, rather than as
  * a true crash report created upon an actual crash.
@@ -269,6 +273,7 @@ enum {
 plcrash_error_t plcrash_log_writer_init (plcrash_log_writer_t *writer,
                                          NSString *app_identifier,
                                          NSString *app_version,
+                                         NSString *app_short_version,
                                          plcrash_async_symbol_strategy_t symbol_strategy,
                                          BOOL user_requested)
 {
@@ -295,6 +300,7 @@ plcrash_error_t plcrash_log_writer_init (plcrash_log_writer_t *writer,
     {
         writer->application_info.app_identifier = strdup([app_identifier UTF8String]);
         writer->application_info.app_version = strdup([app_version UTF8String]);
+        writer->application_info.app_short_version = strdup([app_short_version UTF8String]);
     }
     
     /* Fetch the process information */
@@ -509,6 +515,8 @@ void plcrash_log_writer_free (plcrash_log_writer_t *writer) {
         free(writer->application_info.app_identifier);
     if (writer->application_info.app_version != NULL)
         free(writer->application_info.app_version);
+    if (writer->application_info.app_short_version != NULL)
+        free(writer->application_info.app_short_version);
 
     /* Free the process info */
     if (writer->process_info.process_name != NULL) 
@@ -643,8 +651,9 @@ static size_t plcrash_writer_write_machine_info (plcrash_async_file_t *file, plc
  * @param file Output file
  * @param app_identifier Application identifier
  * @param app_version Application version
+ * @param app_short_version Application short version
  */
-static size_t plcrash_writer_write_app_info (plcrash_async_file_t *file, const char *app_identifier, const char *app_version) {
+static size_t plcrash_writer_write_app_info (plcrash_async_file_t *file, const char *app_identifier, const char *app_version, const char *app_short_version) {
     size_t rv = 0;
 
     /* App identifier */
@@ -652,6 +661,9 @@ static size_t plcrash_writer_write_app_info (plcrash_async_file_t *file, const c
     
     /* App version */
     rv += plcrash_writer_pack(file, PLCRASH_PROTO_APP_INFO_APP_VERSION_ID, PLPROTOBUF_C_TYPE_STRING, app_version);
+    
+    /* App short version */
+    rv += plcrash_writer_pack(file, PLCRASH_PROTO_APP_INFO_APP_SHORT_VERSION_ID, PLPROTOBUF_C_TYPE_STRING, app_short_version);
     
     return rv;
 }
@@ -1273,11 +1285,11 @@ plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
         uint32_t size;
 
         /* Determine size */
-        size = plcrash_writer_write_app_info(NULL, writer->application_info.app_identifier, writer->application_info.app_version);
+        size = plcrash_writer_write_app_info(NULL, writer->application_info.app_identifier, writer->application_info.app_version, writer->application_info.app_short_version);
         
         /* Write message */
         plcrash_writer_pack(file, PLCRASH_PROTO_APP_INFO_ID, PLPROTOBUF_C_TYPE_MESSAGE, &size);
-        plcrash_writer_write_app_info(file, writer->application_info.app_identifier, writer->application_info.app_version);
+        plcrash_writer_write_app_info(file, writer->application_info.app_identifier, writer->application_info.app_version, writer->application_info.app_short_version);
     }
     
     /* Process info */

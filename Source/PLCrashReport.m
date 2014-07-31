@@ -498,9 +498,11 @@ error:
     /* Done */
     NSString *identifier = [NSString stringWithUTF8String: applicationInfo->identifier];
     NSString *version = [NSString stringWithUTF8String: applicationInfo->version];
+    NSString *shortVersion = (applicationInfo->short_version ? [NSString stringWithUTF8String: applicationInfo->short_version] : @"");
 
     return [[[PLCrashReportApplicationInfo alloc] initWithApplicationIdentifier: identifier
-                                                          applicationVersion: version] autorelease];
+                                                          applicationVersion: version
+                                                        applicationShortVersion: shortVersion] autorelease];
 }
 
 

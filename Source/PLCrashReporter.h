@@ -103,7 +103,10 @@ typedef struct PLCrashReporterCallbacks {
 
     /** Application version */
     NSString *_applicationVersion;
-
+    
+    /** Application short version */
+    NSString *_applicationShortVersion;
+    
     /** Path to the crash reporter internal data directory */
     NSString *_crashReportDirectory;
 }
