@@ -134,4 +134,6 @@ typedef struct PLCrashReporterCallbacks {
 
 - (void) setCrashCallbacks: (PLCrashReporterCallbacks *) callbacks;
 
+- (void) setUncaughtExceptionHandler: (NSUncaughtExceptionHandler *) uncaughtExceptionHandler;
+
 @end

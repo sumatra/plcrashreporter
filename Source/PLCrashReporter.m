@@ -138,6 +138,14 @@ static PLCrashReporterCallbacks crashCallbacks = {
 };
 
 /**
+ * @internal
+ *
+ * The optional user-supplied callbacks invoked before the exception processing.
+ */
+static NSUncaughtExceptionHandler *custom_uncaughtExceptionHandler;
+
+
+/**
  * Write a fatal crash report.
  *
  * @param sigctx Fatal handler context.
@@ -358,6 +366,10 @@ static void image_remove_callback (const struct mach_header *mh, intptr_t vmaddr
  * exception field, and triggering the signal handler.
  */
 static void uncaught_exception_handler (NSException *exception) {
+    
+    if (custom_uncaughtExceptionHandler)
+        custom_uncaughtExceptionHandler(exception);
+    
     /* Set the uncaught exception */
     plcrash_log_writer_set_exception(&signal_handler_context.writer, exception);
 
@@ -821,6 +833,25 @@ cleanup:
     crashCallbacks.handleSignal = callbacks->handleSignal;
 }
 
+
+/**
+ * Set the callbacks that will be executed by the receiver before an exception processing by PLCrashReporter.
+ *
+ * @param uncaughtExceptionHandler Custom uncaughtExceptionHandler..
+ *
+ * @note This method must be called prior to PLCrashReporter::enableCrashReporter or
+ * PLCrashReporter::enableCrashReporterAndReturnError:
+ *
+ * @sa The @ref async_safety documentation.
+ */
+
+- (void)setUncaughtExceptionHandler:(NSUncaughtExceptionHandler *)uncaughtExceptionHandler
+{
+    if (_enabled)
+        [NSException raise: PLCrashReporterException format: @"The crash reporter has alread been enabled"];
+    
+    custom_uncaughtExceptionHandler = uncaughtExceptionHandler;
+}
 
 @end
 
