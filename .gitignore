@@ -1,0 +1,10 @@
+.LSOverride
+.DS_Store
+*.mode1v3
+*.pbxuser
+build/
+*.xcuserstate
+xcuserdata/
+project.xcworkspace/
+
+
