@@ -239,7 +239,11 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         if (report.systemInfo.operatingSystemBuild != nil)
             osBuild = report.systemInfo.operatingSystemBuild;
         
-        [text appendFormat: @"Date/Time:       %@\n", report.systemInfo.timestamp];
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        [df setDateFormat: @"YYYY-MM-dd HH:mm:ss.sss Z"];
+        [text appendFormat: @"Date/Time:       %@\n", [df stringFromDate: report.systemInfo.timestamp]];
+        [df release];
+        
         [text appendFormat: @"OS Version:      %@ %@ (%@)\n", osName, report.systemInfo.operatingSystemVersion, osBuild];
         [text appendFormat: @"Report Version:  104\n"];        
     }
