@@ -34,6 +34,9 @@
 #import "PLCrashReportTextFormatter.h"
 #import "PLCrashCompatConstants.h"
 
+#import <UIKit/UIKit.h>
+
+
 @interface PLCrashReportTextFormatter (PrivateAPI)
 NSInteger binaryImageSort(id binary1, id binary2, void *context);
 + (NSString *) formatStackFrame: (PLCrashReportStackFrameInfo *) frameInfo
@@ -184,7 +187,7 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         }
     
         [text appendFormat: @"Incident Identifier: %@\n", incidentIdentifier];
-        [text appendFormat: @"CrashReporter Key:   TODO\n"];
+        [text appendFormat: @"CrashReporter Key:   %@\n", [[[UIDevice currentDevice] identifierForVendor] UUIDString]];
         [text appendFormat: @"Hardware Model:      %@\n", hardwareModel];
     }
     
