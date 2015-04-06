@@ -26,7 +26,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "GTMSenTestCase.h"
+#import "SenTestCompat.h"
 
 #import "PLCrashLogWriter.h"
 #import "PLCrashFrameWalker.h"
@@ -114,7 +114,7 @@
 
     STAssertTrue(strcmp(appInfo->identifier, "test.id") == 0, @"Incorrect app ID written");
     STAssertTrue(strcmp(appInfo->version, "1.0") == 0, @"Incorrect app version written");
-    STAssertTrue(strcmp(appInfo->short_version, "1.0") == 0, @"Incorrect app short version written");
+    STAssertTrue(strcmp(appInfo->marketing_version, "2.0") == 0, @"Incorrect app marketing version written");
 }
 
 // check a crash report's process info
@@ -324,7 +324,7 @@
     plcrash_async_file_init(&file, fd, 0);
 
     /* Initialize a writer */
-    STAssertEquals(PLCRASH_ESUCCESS, plcrash_log_writer_init(&writer, @"test.id", @"1.0", PLCRASH_ASYNC_SYMBOL_STRATEGY_ALL, false), @"Initialization failed");
+    STAssertEquals(PLCRASH_ESUCCESS, plcrash_log_writer_init(&writer, @"test.id", @"1.0", @"2.0", PLCRASH_ASYNC_SYMBOL_STRATEGY_ALL, false), @"Initialization failed");
 
     /* Set an exception with a valid return address call stack. */
     NSException *e;
@@ -401,15 +401,15 @@
 #endif
     BOOL foundCrashed = NO;
     for (int i = 0; i < crashReport->n_threads; i++) {
-        Plcrash__CrashReport__Thread *thread = crashReport->threads[i];        
-        if (!thread->crashed)
+        Plcrash__CrashReport__Thread *reportThread = crashReport->threads[i];        
+        if (!reportThread->crashed)
             continue;
         
         foundCrashed = YES;
 
         /* Load the first frame */
-        STAssertNotEquals((size_t)0, thread->n_frames, @"No frames available in backtrace");
-        Plcrash__CrashReport__Thread__StackFrame *f = thread->frames[0];
+        STAssertNotEquals((size_t)0, reportThread->n_frames, @"No frames available in backtrace");
+        Plcrash__CrashReport__Thread__StackFrame *f = reportThread->frames[0];
 
         /* Validate PC. This check is inexact, as otherwise we would need to carefully instrument the 
          * call to plcrash_log_writer_write_curthread() in order to determine the exact PC value. */

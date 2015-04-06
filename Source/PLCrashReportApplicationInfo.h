@@ -36,13 +36,13 @@
     /** Application version */
     NSString *_applicationVersion;
     
-    /** Application short version */
-    NSString *_applicationShortVersion;
+    /** Application marketing version */
+    NSString *_applicationMarketingVersion;
 }
 
 - (id) initWithApplicationIdentifier: (NSString *) applicationIdentifier 
                   applicationVersion: (NSString *) applicationVersion
-             applicationShortVersion: (NSString *) applicationShortVersion;
+         applicationMarketingVersion: (NSString *) applicationMarketingVersion;
 
 /**
  * The application identifier. This is usually the application's CFBundleIdentifier value.
@@ -55,8 +55,8 @@
 @property(nonatomic, readonly) NSString *applicationVersion;
 
 /**
- * The application short version. This is usually the application's CFBundleShortVersionString value. Optional.
+ * The application marketing version. This is usually the application's CFBundleShortVersionString value if available. May be nil.
  */
-@property(nonatomic, readonly) NSString *applicationShortVersion;
+@property(nonatomic, readonly) NSString *applicationMarketingVersion;
 
 @end
